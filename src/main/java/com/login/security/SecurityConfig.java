@@ -5,6 +5,7 @@ import com.login.enum_message.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -26,10 +27,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/login", "/register", "/api/auth/refresh").permitAll()
+                        auth.requestMatchers("/login", "/register").permitAll()
                                 .requestMatchers("/api/admin/**").hasAuthority(Roles.ADMIN.name())
-                                .requestMatchers("/api/user/**").hasAnyAuthority(Roles.ADMIN.name(), Roles.USER.name())
+                                .requestMatchers("/api/user/**", "/api/auth/refresh").hasAnyAuthority(Roles.ADMIN.name(), Roles.USER.name())
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
