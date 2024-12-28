@@ -43,6 +43,7 @@ public class UserService {
         String accessToken = tokens.get(Token.ACCESS_TOKEN.name());
         String refreshToken = tokens.get(Token.REFRESH_TOKEN.name());
         existingUser.setRefreshToken(refreshToken);
+	    repository.save(existingUser);
         return new UserDto(accessToken, refreshToken, existingUser.getUsername(), existingUser.getRuolo());
     }
 

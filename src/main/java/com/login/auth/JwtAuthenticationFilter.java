@@ -39,8 +39,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String url = request.getRequestURI();
-        if(url.equals("/login") || url.equals("/register")){
+        if(url.equals("/login") || url.equals("/register") || url.equals("/api/auth/refresh")){
             filterChain.doFilter(request, response);
+	    return;
         }
         // Estrae il token JWT dall'header della richiesta
         String token = getTokenFromRequest(request);

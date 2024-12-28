@@ -21,7 +21,7 @@ public class JwtUtil {
 
 
     public Map<String, String> createTokens(String username, long idUser, String role){
-        long accessExpiration = 1000 * 15 * 60;
+        long accessExpiration = 1000 * 1 * 60;
         long refreshExpiration = 1000 * 60 * 60 * 24 * 7;
         String accessToken = generateToken(username, idUser, role, accessExpiration);
         String refreshToken = generateToken(username, idUser, role, refreshExpiration);
