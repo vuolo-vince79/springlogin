@@ -38,7 +38,7 @@ public class AuthController {
             User exiatingUser = repository.findByUsername(username)
                     .orElseThrow(() -> new UserNotFoundException(ResponseMessage.NO_MATCH.name()));
             if(!exiatingUser.getRefreshToken().equals(refreshToken)){
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new ApiResponse(ResponseMessage.NO_AUTHORIZATION.name(), false));
             }
             long idUser = jwtUtil.extractIdUser(refreshToken);
@@ -48,8 +48,17 @@ public class AuthController {
             UserDto userDto = new UserDto(newAccessToken, refreshToken, username, role);
             return ResponseEntity.ok(new ApiResponse(userDto, true));
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ApiResponse(ResponseMessage.NO_AUTHORIZATION.name(), false));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse> logout(@RequestBody String username){
+        User existingUser = repository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(ResponseMessage.NO_MATCH.name()));
+        existingUser.setRefreshToken(null);
+        repository.save(existingUser);
+        return ResponseEntity.ok(new ApiResponse("ok logout", true));
     }
 
 }
