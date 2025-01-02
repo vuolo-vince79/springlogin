@@ -29,7 +29,7 @@ public class AdminController {
     public ResponseEntity<?> getAllUser(){
             List<User> users = adminService.getAllUser();
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(users);
+                    .body(new ApiResponse(users, true));
     }
 
     @GetMapping("/{id}")
